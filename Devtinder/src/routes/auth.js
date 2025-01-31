@@ -35,29 +35,37 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
     try {
         const { emailID, password } = req.body;
-        const user = await User.findOne({ emailID: emailID }); // Checking the email 
+
+        // Explicitly check if emailID is missing
+        if (!emailID) {
+            return res.status(400).json({ error: "Email is not provided. Please use 'emailID' as the key." });
+        }
+
+        const user = await User.findOne({ emailID });
+
         if (!user) {
-            return res.status(400).send("Email is not valid");
+            return res.status(400).json({ error: "No user found with this email. Please check your emailID." });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (isPasswordValid) {
             const token = await user.getJWT();
-            // console.log(token);
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production", // Secure cookies in production
+                secure: process.env.NODE_ENV === "production",
                 maxAge: 3600000, // Optional: 1 hour
             });
-            return res.json({ message: "Login successfully", user, token });
+            return res.json({ message: "Login successful", user, token });
         } else {
-            return res.status(400).send("Password did not match");
+            return res.status(400).json({ error: "Incorrect password. Please try again." });
         }
     } catch (err) {
-        res.status(400).send("Error" + err.message);
+        res.status(400).json({ error: "An error occurred: " + err.message });
     }
 });
+
+
 
 authRouter.post("/logout", async (req, res) => {
     res.cookie("token", null, {
