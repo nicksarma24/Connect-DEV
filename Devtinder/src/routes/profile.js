@@ -7,7 +7,9 @@ const {userAuth}=require("../middlewares/auth")
 profileRouter.get("/profile/view", userAuth, async(req, res)=>{
     try{
         const user=req.user
-        res.send(user);
+        const { token } = req.cookies; //getting token 
+    
+        res.json( {user, token}); //sending token with user
     } catch(err){
         res.status(400).send("Error:"+err.message)
     }
