@@ -33,14 +33,14 @@ const userSchema= new mongoose.Schema({
         type: String
     },
     about:{
-        type:String,
+        type:String, //handle validation 
         default:"This is the default about the user",
     },
     skills:{
         type:[String],
     },
     photo: {  // New field for storing the photo URL
-        type: String,
+        type: String, //validation required
     },
 })
 

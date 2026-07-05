@@ -37,7 +37,7 @@ authRouter.post("/login", async (req, res) => {
         const { emailID, password } = req.body;
         const user = await User.findOne({ emailID: emailID }); // Checking the email 
         if (!user) {
-            return res.status(400).send("Email is not valid");
+            return res.status(400).send("Email is not valid");  //Email is valid but the schema is not correctly mentioned
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);

@@ -5,35 +5,40 @@ import { BASE_URL } from "./utils/constants";
 import { addUser } from "./utils/userSlice";
 import { useDispatch } from "react-redux";
 
-const EditProfile = ({user}) => {
+const EditProfile = ({ user }) => {
   const [firstName, setFirst] = useState(user.firstName);
   const [lastName, setLast] = useState(user.lastName);
   const [about, setAbout] = useState(user.about);
   const [age, setAge] = useState(user.age);
-  const dispatch=useDispatch()
-  const [showtoast, setShowtoast]=useState(false)
-  const [photo, setphoto]=useState(user.photo)
-  
+  const dispatch = useDispatch();
+  const [showtoast, setShowtoast] = useState(false);
+  const [photo, setphoto] = useState(user.photo);
+
   //i am not keeping age,gender and other stuffs
 
-  const saveProfile=async()=>{
-    try{
-        const res=await axios.patch(
-            BASE_URL+"/profile/edit",{
-                firstName, lastName, about,age, photo,
-            }, {withCredentials:true}
-        )
-        
-        dispatch(addUser(res?.data?.data))
-        setShowtoast(true);
-        setTimeout(()=>{
-            setShowtoast(false)
-        },3000)
-    } catch(err){
-        console.log("photo ka error hai"+err.message)
-    }
-  }
+  const saveProfile = async () => {
+    try {
+      const res = await axios.put(
+        BASE_URL + "/profile/edit",
+        {
+          firstName,
+          lastName,
+          about,
+          age,
+          photo,
+        },
+        { withCredentials: true },
+      );
 
+      dispatch(addUser(res?.data?.data));
+      setShowtoast(true);
+      setTimeout(() => {
+        setShowtoast(false);
+      }, 3000);
+    } catch (err) {
+      console.log("photo ka error hai" + err.message);
+    }
+  };
 
   return (
     <>
@@ -114,7 +119,10 @@ const EditProfile = ({user}) => {
           </div>
         </div>
         <div className="mt-3">
-          <UserCard user={{ firstName, lastName, about, age, photo }} />
+          <UserCard
+            user={{ firstName, lastName, about, age, photo }}
+            showActions={false}
+          />
         </div>
       </div>
       {showtoast && (
@@ -126,6 +134,6 @@ const EditProfile = ({user}) => {
       )}
     </>
   );
-}
+};
 
-export default EditProfile
+export default EditProfile;
